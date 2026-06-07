@@ -37,6 +37,12 @@ AUDIT_REPORT.md
 !trading-agent-blueprint*.md
 !trading-agent-prerequisites.md
 
+# Local-only files
+migrate_to_workspace.sh
+railway.toml
+trading-agent-blueprint*.md
+trading-agent-prerequisites.md
+
 # ═══════════════════════════════════════════════════════════════════════════
 # Python
 # ═══════════════════════════════════════════════════════════════════════════
