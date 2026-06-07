@@ -1,11 +1,12 @@
 name: Deploy Frontend → S3 + CloudFront
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "frontend/**"         # only runs when frontend files change
-      - ".github/workflows/deploy-frontend.yml"  # or when workflow itself changes
+  workflow_dispatch:  # Manual trigger only until AWS infra is ready
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - "frontend/**"
+  #     - ".github/workflows/deploy-frontend.yml"
 
 permissions:
   id-token: write             # needed for OIDC → AWS auth (no long-lived keys)

@@ -1,12 +1,13 @@
 name: Deploy Backend → EC2
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "backend/**"
-      - "docker-compose.yml"
-      - ".github/workflows/deploy-backend.yml"
+  workflow_dispatch:  # Manual trigger only until AWS infra is ready
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - "backend/**"
+  #     - "docker-compose.yml"
+  #     - ".github/workflows/deploy-backend.yml"
 
 permissions:
   id-token: write
