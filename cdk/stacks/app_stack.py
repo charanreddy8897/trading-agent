@@ -101,9 +101,12 @@ class AppStack(cdk.Stack):
             "SLACK_CHANNEL_ORDERS":   "REPLACE_ME_optional",
             "SLACK_CHANNEL_EMERGENCY": "REPLACE_ME_optional",
             "JWT_SECRET_KEY":      "REPLACE_ME_generate_with_openssl_rand_hex_32",
-            "RH_USERNAME":         "REPLACE_ME_optional",
-            "RH_PASSWORD":         "REPLACE_ME_optional",
-            "RH_TOTP":             "REPLACE_ME_optional",
+            "ROBINHOOD_SYNC_KEY":  "REPLACE_ME_generate_with_openssl_rand_hex_32",
+            "TRADING_MODE":        "paper",
+            "LOG_LEVEL":           "INFO",
+            "RH_USERNAME":         "REPLACE_ME_optional_deprecated",
+            "RH_PASSWORD":         "REPLACE_ME_optional_deprecated",
+            "RH_TOTP":             "REPLACE_ME_optional_deprecated",
         }
         for name, placeholder in ssm_params.items():
             ssm.StringParameter(
@@ -134,16 +137,8 @@ class AppStack(cdk.Stack):
             "chmod +x /usr/local/bin/docker-compose",
 
             # ── Pull app code ─────────────────────────────────────────────────
-            # Option 1: Clone from GitHub (recommended - update with your repo URL)
-            # "git clone https://github.com/YOUR_GITHUB_USERNAME/trading_agent.git /app",
-
-            # Option 2: Copy from local (for testing - requires S3 bucket)
-            "mkdir -p /app",
-            "aws s3 cp s3://trading-agent-deployment-artifacts/backend.tar.gz /tmp/backend.tar.gz || echo 'No S3 artifact, expecting git clone'",
-            "[ -f /tmp/backend.tar.gz ] && tar -xzf /tmp/backend.tar.gz -C /app || echo 'Using git clone method'",
-
-            # Fallback to placeholder - UPDATE THIS LINE with your actual repo
-            "if [ ! -d /app/.git ]; then echo 'ERROR: No app code found. Update line 120 in app_stack.py with your GitHub repo URL'; fi",
+            "git clone https://github.com/charanreddy8897/trading-agent.git /app",
+            "cd /app && git checkout main",
 
             # ── Fetch DB credentials from Secrets Manager ─────────────────────
             f'SECRET=$(aws secretsmanager get-secret-value --secret-id "{secret_arn}" --region {region} --query SecretString --output text)',

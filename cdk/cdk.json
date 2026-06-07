@@ -9,9 +9,9 @@
     "@aws-cdk/core:checkSecretUsage": true,
 
     "region":       "us-east-1",
-    "account":      "YOUR_12_DIGIT_AWS_ACCOUNT_ID",
+    "account":      "657347292520",
 
-    "my_ip":        "YOUR_HOME_IP/32",
+    "my_ip":        "73.53.57.166/32",
     "key_pair_name": "trading-agent-key",
 
     "domain_name":  ""
