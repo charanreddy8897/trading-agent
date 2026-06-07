@@ -1,0 +1,22 @@
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "backend/Dockerfile"
+buildCommand = ""
+
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/health"
+healthcheckTimeout = 60
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 3
+
+# Environment variables to set in Railway dashboard:
+# ANTHROPIC_API_KEY     = sk-ant-...
+# FINNHUB_API_KEY       = ...
+# ALPACA_API_KEY        = ...
+# ALPACA_SECRET_KEY     = ...
+# SLACK_BOT_TOKEN       = ...
+# JWT_SECRET_KEY        = (openssl rand -hex 32)
+# ROBINHOOD_SYNC_KEY    = ...
+# DATABASE_URL          = (auto-set by Railway PostgreSQL plugin)
+# TRADING_MODE          = paper

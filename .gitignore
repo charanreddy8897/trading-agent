@@ -1,0 +1,166 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# CRITICAL: Environment & Secrets
+# ═══════════════════════════════════════════════════════════════════════════
+.env
+.env.*
+*.env
+*.env.local
+*.env.production
+*.env.development
+!.env.example
+
+# AWS credentials
+.aws/
+credentials
+config
+
+# SSH keys
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+
+# API keys and secrets
+secrets/
+*.secret
+*.secrets
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Documentation (keep local until ready)
+# ═══════════════════════════════════════════════════════════════════════════
+README.md
+*/README.md
+**/*README.md
+TESTING_COMPLETE.md
+AUDIT_REPORT.md
+*.md
+!trading-agent-blueprint*.md
+!trading-agent-prerequisites.md
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Python
+# ═══════════════════════════════════════════════════════════════════════════
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.venv/
+venv/
+env/
+ENV/
+*.egg-info/
+dist/
+build/
+*.egg
+*.whl
+
+# pytest
+.pytest_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.cover
+.hypothesis/
+
+# mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Node / Frontend
+# ═══════════════════════════════════════════════════════════════════════════
+node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/out/
+.npm
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Database
+# ═══════════════════════════════════════════════════════════════════════════
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+data/*.sqlite
+data/*.db
+migrations/versions/*.pyc
+
+# PostgreSQL dumps
+*.sql
+*.dump
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Logs
+# ═══════════════════════════════════════════════════════════════════════════
+*.log
+logs/
+*.log.*
+/tmp/
+nohup.out
+
+# ═══════════════════════════════════════════════════════════════════════════
+# IDE & Editors
+# ═══════════════════════════════════════════════════════════════════════════
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+.project
+.pydevproject
+.settings/
+
+# JetBrains
+*.iml
+.idea_modules/
+
+# VSCode
+.vscode/settings.json
+.vscode/launch.json
+
+# ═══════════════════════════════════════════════════════════════════════════
+# OS
+# ═══════════════════════════════════════════════════════════════════════════
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# ═══════════════════════════════════════════════════════════════════════════
+# Data / Cache / Temporary
+# ═══════════════════════════════════════════════════════════════════════════
+data/
+*.csv
+*.xlsx
+*.xls
+cache/
+*.cache
+.cache/
+
+# CDK
+cdk.out/
+cdk.context.json
+*.js.map
+
+# Docker
+docker-compose.override.yml
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Backups
+*.bak
+*.backup
+*~

@@ -1,0 +1,19 @@
+{
+  "app": "python3 app.py",
+  "watch": {
+    "include": ["**"],
+    "exclude": ["README.md", "cdk*.json", "**/__pycache__", "**/.venv"]
+  },
+  "context": {
+    "@aws-cdk/aws-lambda:recognizeLayerVersion": true,
+    "@aws-cdk/core:checkSecretUsage": true,
+
+    "region":       "us-east-1",
+    "account":      "YOUR_12_DIGIT_AWS_ACCOUNT_ID",
+
+    "my_ip":        "YOUR_HOME_IP/32",
+    "key_pair_name": "trading-agent-key",
+
+    "domain_name":  ""
+  }
+}

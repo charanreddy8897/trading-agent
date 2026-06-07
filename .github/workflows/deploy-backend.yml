@@ -1,0 +1,58 @@
+name: Deploy Backend → EC2
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend/**"
+      - "docker-compose.yml"
+
+permissions:
+  id-token: write
+  contents: read
+
+env:
+  AWS_REGION: us-east-1
+
+jobs:
+  deploy:
+    name: SSH Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_DEPLOY_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # ── Get EC2 IP from SSM (so it's not hard-coded in secrets) ───────────
+      - name: Get EC2 public IP
+        id: ec2ip
+        run: |
+          IP=$(aws ssm get-parameter \
+            --name "/trading-agent/EC2_PUBLIC_IP" \
+            --query "Parameter.Value" --output text)
+          echo "ip=$IP" >> $GITHUB_OUTPUT
+
+      # ── SSH deploy ─────────────────────────────────────────────────────────
+      - name: Deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host:     ${{ steps.ec2ip.outputs.ip }}
+          username: ec2-user
+          key:      ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          script: |
+            cd /app
+            git pull origin main
+            docker build -t trading-agent ./backend
+            docker stop trading-agent 2>/dev/null || true
+            docker rm   trading-agent 2>/dev/null || true
+            docker run -d --restart always \
+              --env-file /app/.env \
+              -p 8000:8000 \
+              --name trading-agent \
+              trading-agent
+            echo "Backend deployed at $(date)"

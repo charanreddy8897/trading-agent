@@ -1,0 +1,50 @@
+# Data sources
+yfinance>=0.2.31
+robin-stocks==3.0.6
+alpaca-py>=0.26.0
+finnhub-python>=2.4.19
+websockets>=12.0
+
+# Data processing
+pandas>=2.1.0
+numpy>=1.25.0
+
+# Technical analysis
+ta>=0.11.0
+
+# AI / LLM
+anthropic>=0.40.0
+
+# Web framework
+fastapi>=0.109.0
+uvicorn>=0.27.0
+pydantic>=2.6.0
+
+# Async HTTP (Slack API) — version controlled by alpaca-trade-api
+aiohttp>=3.8.2
+
+# Database
+sqlalchemy>=2.0.25
+
+# Scheduling
+apscheduler>=3.10.4
+
+# Security
+cryptography>=42.0.0
+pyotp>=2.9.0
+python-jose>=3.3.0
+passlib>=1.7.4
+bcrypt>=4.1.2
+
+# Utilities
+python-dotenv>=1.0.0
+requests>=2.31.0
+beautifulsoup4>=4.12.0
+
+# Dashboard (optional, Streamlit path)
+streamlit>=1.36.0
+plotly>=5.18.0
+schedule>=1.2.0
+
+# Backtesting (post-week-1)
+vectorbt>=0.26.2

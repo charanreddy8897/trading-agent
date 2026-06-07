@@ -1,0 +1,31 @@
+version: '3.8'
+
+# Production override — used on AWS EC2
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# DATABASE_URL should point to RDS, not the local db container.
+# Set all secrets via AWS Secrets Manager → injected as env vars at container start.
+
+services:
+  db:
+    # In production, DATABASE_URL points to RDS — disable local db container
+    profiles: ["local-only"]
+
+  pgadmin:
+    profiles: ["local-only"]
+
+  backend:
+    restart: always
+    environment:
+      DATABASE_URL: ${DATABASE_URL}           # RDS endpoint from env
+      TRADING_MODE: ${TRADING_MODE:-paper}
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    logging:
+      driver: awslogs
+      options:
+        awslogs-group: /trading-agent/backend
+        awslogs-region: ${AWS_REGION:-us-east-1}
+        awslogs-stream-prefix: backend

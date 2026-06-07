@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Beginner's Trading Playbook</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0c0e12;
+    --bg-soft:#13161c;
+    --panel:#171b22;
+    --panel-2:#1d222b;
+    --line:#2a3039;
+    --ink:#e9ecf1;
+    --ink-soft:#aab2bf;
+    --ink-dim:#7b8492;
+    --bull:#42d392;
+    --bull-dim:#1f6e4d;
+    --bear:#ff6b6b;
+    --gold:#f5b14c;
+    --blue:#5aa9ff;
+    --shadow:0 18px 50px -20px rgba(0,0,0,.7);
+    --mono:'Space Mono',monospace;
+    --serif:'Fraunces',Georgia,serif;
+    --sans:'DM Sans',sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:var(--sans);
+    font-size:16.5px;
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    background-image:
+      linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),
+      linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);
+    background-size:42px 42px;
+  }
+  /* progress bar */
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:linear-gradient(90deg,var(--bull),var(--gold));z-index:200;transition:width .1s linear}
+
+  .layout{display:grid;grid-template-columns:288px 1fr;max-width:1480px;margin:0 auto}
+
+  /* sidebar */
+  aside{
+    position:sticky;top:0;align-self:start;height:100vh;overflow-y:auto;
+    padding:34px 22px 60px;border-right:1px solid var(--line);
+    background:linear-gradient(180deg,var(--bg-soft),var(--bg));
+  }
+  aside::-webkit-scrollbar{width:7px}
+  aside::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .brand{font-family:var(--serif);font-weight:600;font-size:1.45rem;line-height:1.15;letter-spacing:-.01em;margin-bottom:4px}
+  .brand .tick{color:var(--bull)}
+  .brand-sub{font-family:var(--mono);font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:var(--ink-dim);margin-bottom:28px}
+  nav a{
+    display:flex;gap:10px;align-items:baseline;text-decoration:none;color:var(--ink-soft);
+    font-size:.9rem;padding:7px 11px;border-radius:8px;margin-bottom:2px;border:1px solid transparent;
+    transition:.18s
+  }
+  nav a .n{font-family:var(--mono);font-size:.7rem;color:var(--ink-dim);min-width:20px}
+  nav a:hover{background:var(--panel);color:var(--ink)}
+  nav a.active{background:var(--panel-2);color:var(--ink);border-color:var(--line)}
+  nav a.active .n{color:var(--bull)}
+  .nav-group{font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink-dim);margin:22px 0 8px 11px}
+
+  /* main */
+  main{padding:0 0 120px;min-width:0}
+  .wrap{max-width:840px;margin:0 auto;padding:0 38px}
+  section{padding:64px 0 12px;scroll-margin-top:20px}
+  section:first-of-type{padding-top:54px}
+
+  /* hero */
+  .hero{padding:80px 0 44px;border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--bull);margin-bottom:18px}
+  h1{font-family:var(--serif);font-weight:600;font-size:clamp(2.4rem,5.5vw,3.9rem);line-height:1.02;letter-spacing:-.02em;margin-bottom:20px}
+  h1 em{font-style:italic;color:var(--gold)}
+  .lede{font-size:1.18rem;color:var(--ink-soft);max-width:640px}
+
+  .sec-num{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;color:var(--bull);text-transform:uppercase;display:block;margin-bottom:12px}
+  h2{font-family:var(--serif);font-weight:600;font-size:clamp(1.7rem,3.4vw,2.4rem);line-height:1.08;letter-spacing:-.015em;margin-bottom:8px}
+  h3{font-family:var(--serif);font-weight:600;font-size:1.32rem;margin:34px 0 10px;letter-spacing:-.01em}
+  h4{font-size:1.02rem;font-weight:600;margin:22px 0 6px;color:var(--ink)}
+  p{margin-bottom:14px;color:var(--ink-soft)}
+  p strong, li strong{color:var(--ink);font-weight:600}
+  a.link{color:var(--blue);text-decoration:none;border-bottom:1px solid rgba(90,169,255,.3)}
+  a.link:hover{border-color:var(--blue)}
+  ul,ol{margin:0 0 16px 4px;padding-left:22px;color:var(--ink-soft)}
+  li{margin-bottom:7px}
+  .mono{font-family:var(--mono)}
+  .tk{font-family:var(--mono);font-weight:700;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);padding:.5px 6px;border-radius:5px;font-size:.85em;letter-spacing:.02em}
+
+  /* cards & callouts */
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:24px 26px;margin:20px 0;box-shadow:var(--shadow)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .mini{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+  .mini h4{margin-top:0}
+  .mini p{margin-bottom:0;font-size:.94rem}
+
+  .callout{border-radius:12px;padding:18px 20px 18px 22px;margin:20px 0;border-left:3px solid var(--bull);background:linear-gradient(90deg,rgba(66,211,146,.08),rgba(66,211,146,.01))}
+  .callout .tag{font-family:var(--mono);font-size:.66rem;letter-spacing:.16em;text-transform:uppercase;color:var(--bull);display:block;margin-bottom:6px}
+  .callout p:last-child{margin-bottom:0}
+  .callout.warn{border-color:var(--gold);background:linear-gradient(90deg,rgba(245,177,76,.09),rgba(245,177,76,.01))}
+  .callout.warn .tag{color:var(--gold)}
+  .callout.risk{border-color:var(--bear);background:linear-gradient(90deg,rgba(255,107,107,.09),rgba(255,107,107,.01))}
+  .callout.risk .tag{color:var(--bear)}
+
+  /* jargon definition */
+  .jargon{display:flex;gap:14px;padding:14px 16px;border:1px dashed var(--line);border-radius:10px;margin:14px 0;background:var(--bg-soft)}
+  .jargon .word{font-family:var(--mono);font-weight:700;color:var(--gold);font-size:.82rem;white-space:nowrap;padding-top:2px;letter-spacing:.02em}
+  .jargon .def{font-size:.94rem;color:var(--ink-soft)}
+  .jargon .def b{color:var(--ink)}
+
+  /* table */
+  table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem}
+  th,td{text-align:left;padding:10px 12px;border-bottom:1px solid var(--line)}
+  th{font-family:var(--mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-dim);font-weight:700}
+  td{color:var(--ink-soft)}
+  td:first-child{color:var(--ink);font-weight:500}
+  tr:hover td{background:rgba(255,255,255,.015)}
+
+  /* steps */
+  .step{display:flex;gap:16px;margin:16px 0}
+  .step .num{font-family:var(--mono);font-weight:700;color:var(--bg);background:var(--bull);width:30px;height:30px;border-radius:8px;display:grid;place-items:center;flex-shrink:0;font-size:.85rem}
+  .step .body{padding-top:2px}
+  .step .body h4{margin-top:2px}
+  .step .body p{margin-bottom:0;font-size:.95rem}
+
+  /* example badge */
+  .ex-head{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+  .ex-head .ticker{font-family:var(--mono);font-weight:700;background:var(--bull-dim);color:var(--bull);padding:3px 9px;border-radius:6px;font-size:.82rem;letter-spacing:.04em}
+  .ex-head .label{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
+
+  /* svg figure */
+  .figure{background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:18px;margin:20px 0}
+  .figure svg{width:100%;height:auto;display:block}
+  .figure .cap{font-size:.84rem;color:var(--ink-dim);margin-top:12px;font-style:italic}
+
+  .pill{display:inline-block;font-family:var(--mono);font-size:.7rem;background:var(--panel-2);border:1px solid var(--line);color:var(--ink-soft);padding:3px 9px;border-radius:20px;margin:2px 4px 2px 0}
+
+  .divider{height:1px;background:var(--line);margin:8px 0;border:0}
+
+  /* link rows */
+  .lnk{display:flex;flex-direction:column;gap:3px;padding:13px 16px;border:1px solid var(--line);border-radius:10px;margin:10px 0;background:var(--bg-soft);transition:.18s}
+  .lnk:hover{border-color:var(--bull);background:var(--panel)}
+  .lnk a{font-family:var(--mono);font-size:.82rem;color:var(--blue);text-decoration:none;word-break:break-all}
+  .lnk a:hover{text-decoration:underline}
+  .lnk .what{font-size:.9rem;color:var(--ink-soft)}
+  .lnk .what b{color:var(--ink)}
+  .lnk .mine{font-family:var(--mono);font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);align-self:flex-start;border:1px solid rgba(245,177,76,.35);padding:1px 6px;border-radius:5px}
+  .lnk .pub{color:var(--bull);border-color:rgba(66,211,146,.35)}
+  .plain{display:flex;gap:10px;align-items:baseline;font-size:.94rem;color:var(--ink-soft);background:rgba(90,169,255,.06);border-left:3px solid var(--blue);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0}
+  .plain .lab{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--blue);white-space:nowrap;padding-top:3px}
+
+  footer{max-width:840px;margin:60px auto 0;padding:30px 38px;border-top:1px solid var(--line);color:var(--ink-dim);font-size:.86rem}
+
+  .toptag{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-dim)}
+
+  /* mobile */
+  .menu-btn{display:none}
+  @media(max-width:900px){
+    .layout{grid-template-columns:1fr}
+    aside{position:fixed;z-index:150;width:280px;left:-300px;transition:left .25s;box-shadow:var(--shadow)}
+    aside.open{left:0}
+    .menu-btn{display:flex;position:fixed;top:14px;right:14px;z-index:160;background:var(--panel);border:1px solid var(--line);color:var(--ink);width:46px;height:46px;border-radius:12px;align-items:center;justify-content:center;font-size:1.3rem;cursor:pointer}
+    .wrap{padding:0 22px}
+    .grid2{grid-template-columns:1fr}
+    .hero{padding-top:70px}
+  }
+</style>
+</head>
+<body>
+<div id="progress"></div>
+<button class="menu-btn" id="menuBtn" aria-label="menu">☰</button>
+
+<div class="layout">
+  <aside id="sidebar">
+    <div class="brand">The Trader's<br>Playbook <span class="tick">▲</span></div>
+    <div class="brand-sub">Zero → Literate</div>
+    <nav id="nav">
+      <a href="#start"><span class="n">00</span> Read this first</a>
+      <div class="nav-group">Foundations</div>
+      <a href="#basics"><span class="n">01</span> The absolute basics</a>
+      <a href="#ma"><span class="n">02</span> Moving averages</a>
+      <div class="nav-group">The Workflow</div>
+      <a href="#toolkit"><span class="n">03</span> The toolkit</a>
+      <a href="#screen"><span class="n">04</span> Screening for stocks</a>
+      <a href="#vocab"><span class="n">05</span> Key vocabulary</a>
+      <div class="nav-group">The Strategy</div>
+      <a href="#mentors"><span class="n">06</span> O'Neil &amp; Weinstein</a>
+      <a href="#peg"><span class="n">07</span> Power Earnings Gap</a>
+      <a href="#build"><span class="n">08</span> Building a position</a>
+      <a href="#sell"><span class="n">09</span> Selling &amp; managing</a>
+      <div class="nav-group">Putting It Together</div>
+      <a href="#examples"><span class="n">10</span> Real worked examples</a>
+      <a href="#setup"><span class="n">11</span> Indicator setup</a>
+      <a href="#reality"><span class="n">12</span> Reality &amp; risk check</a>
+    </nav>
+  </aside>
+
+  <main>
+    <div class="wrap">
+
+      <!-- HERO -->
+      <header class="hero" id="start">
+        <div class="eyebrow">A beginner's decoder for your trading notes</div>
+        <h1>Learn to read the market <em>the way your notes describe it.</em></h1>
+        <p class="lede">Your toolkit document is written for people who already speak the language. This dashboard translates every part of it from scratch — assuming you've never bought a stock in your life — and shows each idea with the real examples your notes reference.</p>
+
+        <div class="callout risk" style="margin-top:30px">
+          <span class="tag">⚠ Before anything else</span>
+          <p>This is an <strong>educational explainer</strong> of one trader's personal method — not financial advice, and not a recommendation to trade. The approach in your notes is <strong>active, high-risk trading</strong>: concentrated positions, targets of +100–200%, and a tolerance for −10% to −20% swings. Most beginners who trade actively <strong>lose money</strong>. Learn the vocabulary here, but treat real money as something you only risk after a lot more study, ideally starting with small amounts or a paper-trading (fake-money) account. I'm an AI, not a financial advisor.</p>
+        </div>
+      </header>
+
+      <!-- 00 START -->
+      <section id="readfirst">
+        <span class="sec-num">00 — Orientation</span>
+        <h2>What kind of activity is this, really?</h2>
+        <p>The first thing to untangle is that your notes blend two related but different games. Knowing which is which will make everything else click.</p>
+
+        <div class="grid2">
+          <div class="mini">
+            <h4>Investing</h4>
+            <p>Buying a piece of a company and holding it for <strong>years</strong>, betting the business grows. Slow, lower-stress, time does the work.</p>
+          </div>
+          <div class="mini">
+            <h4>Trading (swing trading)</h4>
+            <p>Buying with a plan to sell in <strong>days to months</strong> based on price behavior. Faster, more decisions, more risk. This is what most of your notes describe.</p>
+          </div>
+        </div>
+
+        <p>Your document mixes both — it talks about holding "core" positions for big multi-year moves <em>and</em> about "trading shares" you trim quickly. That's a deliberate style: keep a long-term stake while actively managing a smaller chunk around it. We'll keep flagging which is which.</p>
+
+        <div class="callout">
+          <span class="tag">How to use this dashboard</span>
+          <p>Read top to bottom the first time — each section builds on the last. The orange <span class="mono" style="color:var(--gold)">dashed boxes</span> define jargon the moment it appears. Come back later and jump to any section from the menu on the left.</p>
+        </div>
+      </section>
+
+      <!-- 01 BASICS -->
+      <section id="basics">
+        <span class="sec-num">01 — Foundations</span>
+        <h2>The absolute basics</h2>
+        <p>Your notes never define these because they assume you know them. Here's the bedrock, fast.</p>
+
+        <div class="jargon"><span class="word">Stock / Share</span><span class="def">A <b>stock</b> is partial ownership of a company. One unit is a <b>share</b>. If a company is split into 100 shares and you own 1, you own 1% of it. Share prices move all day as people buy and sell.</span></div>
+        <div class="jargon"><span class="word">Position</span><span class="def">The total amount of a stock you currently hold. "A 10% position" means 10% of your portfolio's money is in that one stock.</span></div>
+        <div class="jargon"><span class="word">Long</span><span class="def">You own the stock and profit if it goes <b>up</b>. (The opposite, "short," profits when a stock falls — your notes don't use it, so ignore it for now.)</span></div>
+        <div class="jargon"><span class="word">Bull / Bear market</span><span class="def">A <b>bull</b> market is broadly rising; a <b>bear</b> market is broadly falling. The strategies in your notes are designed for bull markets — they explicitly say so.</span></div>
+
+        <h3>Reading a candlestick — the single most important chart skill</h3>
+        <p>A price chart is made of <strong>candles</strong>. Each candle summarizes one time period (one day, on a daily chart). It tells you four prices at a glance: where price <strong>opened</strong>, where it <strong>closed</strong>, and the <strong>high</strong> and <strong>low</strong> it reached in between.</p>
+
+        <div class="figure">
+          <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" font-family="Space Mono, monospace">
+            <!-- green candle -->
+            <g>
+              <line x1="150" y1="30" x2="150" y2="200" stroke="#42d392" stroke-width="2"/>
+              <rect x="128" y="80" width="44" height="90" fill="#42d392" rx="2"/>
+              <text x="150" y="222" fill="#aab2bf" font-size="12" text-anchor="middle">UP day (green)</text>
+              <text x="200" y="40" fill="#7b8492" font-size="11">High (the wick top)</text>
+              <line x1="172" y1="36" x2="196" y2="36" stroke="#2a3039"/>
+              <text x="200" y="90" fill="#7b8492" font-size="11">Close (top of body)</text>
+              <line x1="172" y1="84" x2="196" y2="84" stroke="#2a3039"/>
+              <text x="200" y="170" fill="#7b8492" font-size="11">Open (bottom of body)</text>
+              <line x1="172" y1="166" x2="196" y2="166" stroke="#2a3039"/>
+              <text x="200" y="204" fill="#7b8492" font-size="11">Low (the wick bottom)</text>
+              <line x1="172" y1="200" x2="196" y2="200" stroke="#2a3039"/>
+            </g>
+            <!-- red candle -->
+            <g>
+              <line x1="470" y1="30" x2="470" y2="200" stroke="#ff6b6b" stroke-width="2"/>
+              <rect x="448" y="70" width="44" height="90" fill="#ff6b6b" rx="2"/>
+              <text x="470" y="222" fill="#aab2bf" font-size="12" text-anchor="middle">DOWN day (red)</text>
+              <text x="500" y="80" fill="#7b8492" font-size="11">Open (top)</text>
+              <text x="500" y="160" fill="#7b8492" font-size="11">Close (bottom)</text>
+            </g>
+          </svg>
+          <p class="cap">On a green (up) candle the close is above the open. On a red (down) candle the close is below the open. The thin "wick" lines show the extreme high and low touched during the period.</p>
+        </div>
+
+        <div class="jargon"><span class="word">Price action</span><span class="def">Just a fancy term for "how the price has been moving" — the pattern of candles over time. "Tracking price action" means watching the chart.</span></div>
+
+        <h3>Volume — the fuel gauge</h3>
+        <p><strong>Volume</strong> is how many shares changed hands in a period. It's drawn as bars under the price. It matters enormously in your notes because it reveals <em>conviction</em>: a price move on <strong>high volume</strong> means lots of money agrees with the move; the same move on low volume is weak and easily reversed.</p>
+        <div class="jargon"><span class="word">Institutions</span><span class="def">Big professional money — funds, pensions, banks. They trade in huge size, so when they buy or sell, volume spikes. A central idea in your notes: <b>follow the footprints of institutions</b>, because their buying is what drives stocks up for months.</span></div>
+
+        <div class="callout">
+          <span class="tag">Why this matters for everything ahead</span>
+          <p>Almost every signal in your notes — a "Power Earnings Gap," an "accumulation" base, a "distribution" top — is really just <strong>price + volume</strong> telling a story about whether big money is buying or selling. Hold onto that.</p>
+        </div>
+      </section>
+
+      <!-- 02 MOVING AVERAGES -->
+      <section id="ma">
+        <span class="sec-num">02 — Foundations</span>
+        <h2>Moving averages: the trader's rulebook</h2>
+        <p>Your notes mention "9 EMA," "21 EMA," "50 SMA," "200-day," "10-week," and "30-week" constantly. These are all <strong>moving averages</strong>, and once you understand them, half the document decodes itself.</p>
+
+        <div class="jargon"><span class="word">Moving average (MA)</span><span class="def">A line that plots the <b>average price over the last N periods</b>, recalculated each day. A 50-day MA today is the average closing price of the last 50 days. It smooths out the noise so you can see the underlying trend as a single line.</span></div>
+
+        <h3>SMA vs EMA — the only difference that matters</h3>
+        <div class="grid2">
+          <div class="mini">
+            <h4>SMA — Simple</h4>
+            <p>Every day in the window counts equally. Smoother, slower to react. Used for the "big picture" lines (50, 200).</p>
+          </div>
+          <div class="mini">
+            <h4>EMA — Exponential</h4>
+            <p>Recent days are weighted more heavily, so it reacts faster to new moves. Used for the "close-in" lines (9, 21) that hug price.</p>
+          </div>
+        </div>
+
+        <h3>The standard ladder of moving averages</h3>
+        <p>Think of these as a ladder from "fast and twitchy" (top) to "slow and structural" (bottom). The further down, the more important the line and the bigger the deal if price breaks it.</p>
+        <table>
+          <tr><th>Line</th><th>Speed</th><th>What it represents in your notes</th></tr>
+          <tr><td>9 EMA</td><td>Fastest</td><td>The "trail" for strong leaders. Where you add to powerful names on a small pullback. A clean close below it can be a trim signal.</td></tr>
+          <tr><td>21 EMA</td><td>Fast</td><td>A slightly deeper pullback zone. A second place to add during mild market dips.</td></tr>
+          <tr><td>50 SMA / 10-week</td><td>Medium</td><td>The "is the trend still healthy?" line. (50 days ≈ 10 weeks — same idea, different chart.) Strong leaders "live above" it.</td></tr>
+          <tr><td>200 SMA / 30-week</td><td>Slowest</td><td>The primary long-term trend line. Above it = healthy. Living below it = the big trend may be broken.</td></tr>
+        </table>
+
+        <div class="figure">
+          <svg viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" font-family="Space Mono, monospace">
+            <!-- rising price path -->
+            <polyline points="20,230 90,210 130,225 180,180 230,195 290,150 340,165 400,120 450,135 510,95 560,110 620,70"
+              fill="none" stroke="#e9ecf1" stroke-width="2.5"/>
+            <!-- 9 ema close hugging -->
+            <polyline points="20,235 90,218 130,222 180,192 230,196 290,162 340,170 400,132 450,140 510,108 560,116 620,82"
+              fill="none" stroke="#42d392" stroke-width="1.6" opacity=".9"/>
+            <!-- 50 sma slower -->
+            <polyline points="20,240 130,232 230,212 340,188 450,158 560,128 620,112"
+              fill="none" stroke="#f5b14c" stroke-width="1.6" opacity=".9"/>
+            <!-- 200 slowest -->
+            <polyline points="20,245 230,232 450,205 620,178"
+              fill="none" stroke="#5aa9ff" stroke-width="1.6" opacity=".8"/>
+            <text x="628" y="80" fill="#e9ecf1" font-size="10" text-anchor="end">price</text>
+            <text x="628" y="96" fill="#42d392" font-size="10" text-anchor="end">9 EMA</text>
+            <text x="628" y="124" fill="#f5b14c" font-size="10" text-anchor="end">50 SMA</text>
+            <text x="628" y="192" fill="#5aa9ff" font-size="10" text-anchor="end">200 SMA</text>
+          </svg>
+          <p class="cap">In a healthy uptrend the lines "stack" in order: price on top, then the fast MA, then the slow MAs underneath. Faster lines hug price; slower lines drift below as a safety net.</p>
+        </div>
+
+        <div class="jargon"><span class="word">"Respecting" a moving average</span><span class="def">When a stock dips down to a moving average and bounces off it instead of crashing through, it is "respecting" that line — a sign the trend is healthy and buyers are stepping in there.</span></div>
+        <div class="jargon"><span class="word">"Extended"</span><span class="def">When price has run <b>far above</b> a moving average, it's "extended" — stretched like a rubber band, statistically likely to pull back or pause. Your notes use this to decide when to <b>stop buying</b> and when to <b>trim</b>.</span></div>
+
+        <div class="callout warn">
+          <span class="tag">The mental model to keep</span>
+          <p>Moving averages aren't magic. They're <strong>reference points</strong> that lots of traders watch, which makes them partly self-fulfilling. Your notes use them as a rulebook: <em>where to add, when a stock is too stretched, and when a trend has broken.</em></p>
+        </div>
+      </section>
+
+      <!-- 03 TOOLKIT -->
+      <section id="toolkit">
+        <span class="sec-num">03 — The Workflow</span>
+        <h2>The toolkit: what each app actually does</h2>
+        <p>Your notes list five services. Here's the job each one does in plain terms, and why a trader bothers with it. (You don't need all of these — free tools cover most of it when starting out.)</p>
+
+        <h3>1 · TradingView <span class="pill">charts</span></h3>
+        <p>The <strong>charting</strong> platform — where you look at the candlesticks, draw lines, and add indicators like moving averages. Your notes also use it to keep <strong>watchlists</strong> (saved groups of stocks to monitor), organized by <strong>sector</strong>.</p>
+        <div class="jargon"><span class="word">Sector</span><span class="def">A group of companies in the same business — e.g. semiconductors, banks, biotech. Stocks in a hot sector often move together, so grouping watchlists by sector helps you spot where the strength is.</span></div>
+        <div class="jargon"><span class="word">Watchlist</span><span class="def">A saved list of tickers you want to keep an eye on. Your notes update theirs around <b>earnings season</b> and add new sectors as leadership rotates.</span></div>
+
+        <p style="margin-top:18px"><strong>The two watchlists from your notes:</strong></p>
+        <div class="lnk">
+          <span class="mine">Your own list · may need login</span>
+          <a href="https://www.tradingview.com/watchlists/315108910/" target="_blank" rel="noopener">tradingview.com/watchlists/315108910</a>
+          <span class="what"><b>Sector-Based Watchlist.</b> Stocks grouped by industry (chips, biotech, etc.). When you open it, you'll see a list of tickers; click any one to pull up its chart. The point is to see <em>which sector is strongest right now</em>.</span>
+        </div>
+        <div class="lnk">
+          <span class="mine">Your own list · may need login</span>
+          <a href="https://www.tradingview.com/watchlists/315108941/" target="_blank" rel="noopener">tradingview.com/watchlists/315108941</a>
+          <span class="what"><b>Power Earnings Gap Watchlist.</b> The stocks that recently gapped up on strong earnings (the PEG setup in Section 07). This is the "leadership" list — where the best new buy ideas tend to come from.</span>
+        </div>
+        <div class="plain"><span class="lab">In plain words</span><span>A watchlist is just a saved folder of stock symbols, like a playlist of songs you want to keep checking on. These two links are <em>your own</em> saved folders — if they don't open, you'll need to be logged into that TradingView account, since personal watchlists can be private.</span></div>
+
+        <h3>2 · Fundamentals — Fiscal AI &amp; TradingView <span class="pill">is the business good?</span></h3>
+        <p>While charts show price, <strong>fundamentals</strong> show the underlying business: revenue, profit, growth. Your notes use a paid tool (Fiscal AI, ~$29/mo) for deeper metrics, but explicitly say <strong>TradingView's free fundamentals are a fine starting point</strong>. Start free.</p>
+        <div class="jargon"><span class="word">Fundamental analysis</span><span class="def">Judging a stock by the company's actual financial health — sales, earnings, growth — rather than by its chart. Your notes pair this with charts: a great chart on a great business is the goal.</span></div>
+
+        <div class="lnk">
+          <span class="mine">Your own dashboard · likely needs login</span>
+          <a href="https://fiscal.ai/dashboard/c87f744f-f0a4-4d48-8e13-a96000a50971/" target="_blank" rel="noopener">fiscal.ai/dashboard/c87f744f-f0a4-4d48-8e13-a96000a50971</a>
+          <span class="what"><b>Your Fiscal AI dashboard.</b> A paid tool (~$29/mo) showing detailed company financials — revenue, profit, growth rates — in clean tables and charts. It's the "is the business actually good?" check.</span>
+        </div>
+        <div class="plain"><span class="lab">In plain words</span><span>This shows the company's "report card" — how much money it makes and whether that's growing. As a beginner you don't need to pay for this: <strong>TradingView's free "Financials" tab gives you the same core numbers</strong> to start with. This link is a personal dashboard and probably won't open without that account.</span></div>
+
+        <h3>3 · Institutional positioning — Fintel &amp; HedgeFollow <span class="pill">who else is buying?</span></h3>
+        <p>These show what the big funds own and are buying or selling. Remember the core idea: institutional buying drives sustained moves. These tools let you peek at those footprints.</p>
+        <div class="jargon"><span class="word">13F filing</span><span class="def">A report large funds must file quarterly disclosing their U.S. stock holdings. It's the raw data behind "fund ownership" sites — but it's delayed by up to ~45 days, so treat it as context, not a live signal.</span></div>
+
+        <div class="lnk">
+          <span class="mine pub">Public example page</span>
+          <a href="https://fintel.io/so/us/acmr" target="_blank" rel="noopener">fintel.io/so/us/acmr</a>
+          <span class="what"><b>Fintel — short interest / ownership for ACMR.</b> <span class="tk">ACMR</span> is just the example stock here (ACM Research, a chip-equipment company). The page shows who owns it and how much is being "shorted" (bet against). Swap "acmr" in the link for any other ticker to see that stock instead.</span>
+        </div>
+        <div class="lnk">
+          <span class="mine pub">Public example page</span>
+          <a href="https://hedgefollow.com/stocks/GH" target="_blank" rel="noopener">hedgefollow.com/stocks/GH</a>
+          <span class="what"><b>HedgeFollow — fund holdings for GH.</b> <span class="tk">GH</span> is the example stock (Guardant Health). The page lists which hedge funds hold it and whether they recently added or sold. Change "GH" in the link to look up any other ticker.</span>
+        </div>
+        <div class="plain"><span class="lab">In plain words</span><span>These two are like "who else is in this trade?" lookups for a single stock. Unlike the links above, <strong>these are public</strong> — they'll open for anyone. They're showing example stocks (ACMR, GH); the real skill is checking whether <em>big professional funds are buying</em> a stock you're interested in. Remember the data is delayed by weeks, so it's background context, not a live buy signal.</span></div>
+
+        <h3>4 · Stock scanning — Finviz <span class="pill">finding ideas</span></h3>
+        <p>A <strong>screener</strong> (or "scanner") filters thousands of stocks down to the handful that match your rules — so you're not staring at the whole market. Your notes use a paid tier (Finviz Elite) but the free Finviz screener works to learn. We break the exact filters down in the next section.</p>
+        <div class="lnk">
+          <span class="mine pub">Public · free version works</span>
+          <a href="https://finviz.com/" target="_blank" rel="noopener">finviz.com</a>
+          <span class="what"><b>Finviz home + screener.</b> Click "Screener" at the top, then set the filters from Section 04. It returns a shortlist of stocks matching your rules. The free version is plenty to learn on.</span>
+        </div>
+        <div class="plain"><span class="lab">In plain words</span><span>Think of Finviz as a search engine for stocks. Instead of typing words, you tick boxes ("only big companies," "only ones trending up") and it hands you the matching list — turning ~8,000 stocks into maybe 20 worth looking at.</span></div>
+
+        <div class="callout">
+          <span class="tag">Beginner starting stack (all free)</span>
+          <p>TradingView (charts + free fundamentals + watchlists) and free Finviz (screening) is genuinely enough to learn everything in your notes. Add paid tools only once you understand <em>why</em> you'd want them.</p>
+        </div>
+      </section>
+
+      <!-- 04 SCREEN -->
+      <section id="screen">
+        <span class="sec-num">04 — The Workflow</span>
+        <h2>Screening: turning 8,000 stocks into a short list</h2>
+        <p>Your notes run a fixed set of filters in Finviz. Each one is a quality or "is this tradable?" check. Here's what every filter does and the logic behind it.</p>
+
+        <h3>Descriptive filters — "is this stock worth my time?"</h3>
+        <table>
+          <tr><th>Filter</th><th>Setting</th><th>Why</th></tr>
+          <tr><td>Market cap</td><td>&gt; $2B (mid-cap+)</td><td>Bigger companies are more stable and more likely to attract institutions. Avoids tiny, easily-manipulated stocks.</td></tr>
+          <tr><td>Price</td><td>&gt; $5</td><td>Filters out "penny stocks," which are highly speculative and often junk.</td></tr>
+          <tr><td>Average volume</td><td>&gt; 500K</td><td>Ensures enough shares trade daily that you can buy and sell easily without moving the price against yourself.</td></tr>
+          <tr><td>Relative volume</td><td>&gt; 1</td><td>Today's volume vs. its own normal. Above 1 means <b>more active than usual</b> — something is happening.</td></tr>
+          <tr><td>Current volume</td><td>&gt; 1M</td><td>Confirms real, live activity today.</td></tr>
+          <tr><td>Industry</td><td>Stocks only</td><td>Excludes funds/ETFs — you want individual companies.</td></tr>
+        </table>
+
+        <div class="jargon"><span class="word">Market cap</span><span class="def">The company's total value = share price × number of shares. "Mid-cap" ≈ $2B–$10B, "large-cap" ≈ $10B+. Bigger generally means safer and more institutional interest.</span></div>
+        <div class="jargon"><span class="word">Liquidity</span><span class="def">How easily you can buy/sell without moving the price. High volume = high liquidity = you can get in and out cleanly. The volume filters above are all liquidity checks.</span></div>
+        <div class="jargon"><span class="word">Relative volume (RVol)</span><span class="def">Today's volume ÷ its typical volume. RVol of 2 means twice the normal interest. A spike in RVol often flags institutional activity or news.</span></div>
+
+        <h3>Technical filters — "is it trending up?"</h3>
+        <p>The three technical filters all say the same thing in three ways: <strong>price is above its 20-day, 50-day, and 200-day moving averages.</strong> When all three are true, the stock is in an uptrend across short, medium, <em>and</em> long timeframes.</p>
+        <div class="callout">
+          <span class="tag">What this combination finds</span>
+          <p>Stocks with <strong>relative strength</strong> (outperforming the market) <em>and</em> rising volume — i.e. healthy uptrends that institutions are actively buying. This is the raw material; the strategy sections decide which ones are worth acting on.</p>
+        </div>
+        <div class="jargon"><span class="word">Relative strength</span><span class="def">How a stock performs <b>compared to the overall market</b>. A stock making new highs while the market is flat has high relative strength — exactly what trend-followers hunt for. (Not the same as the RSI indicator, which measures momentum.)</span></div>
+      </section>
+
+      <!-- 05 VOCAB -->
+      <section id="vocab">
+        <span class="sec-num">05 — The Workflow</span>
+        <h2>Key vocabulary you'll keep meeting</h2>
+        <p>A focused glossary of the terms the strategy sections rely on. Skim now, refer back later.</p>
+
+        <h3>Business-quality terms</h3>
+        <div class="jargon"><span class="word">EPS</span><span class="def"><b>Earnings Per Share</b> = company profit ÷ number of shares. The single most-watched profitability number. Rising EPS = the company is making more money per share.</span></div>
+        <div class="jargon"><span class="word">Revenue</span><span class="def">Total sales — the top line, before any costs. "Revenue growth" means the company is selling more.</span></div>
+        <div class="jargon"><span class="word">YoY</span><span class="def"><b>Year-over-Year</b> — comparing a period to the same period a year earlier (this quarter vs. the same quarter last year). Strips out seasonal noise. Your notes want EPS and revenue growing <b>+20% YoY</b>.</span></div>
+
+        <h3>Chart structure terms</h3>
+        <div class="jargon"><span class="word">Consolidation / Base</span><span class="def">A period where a stock stops trending and trades sideways in a range — "resting." Your notes want a <b>long base of 6–18+ months</b> before buying, because a big, patient base often launches a big move. Think of it as a coiled spring.</span></div>
+        <div class="jargon"><span class="word">Breakout</span><span class="def">When price finally pushes <b>above</b> the top of a base on strong volume — often the start of the next leg up.</span></div>
+        <div class="jargon"><span class="word">Pullback</span><span class="def">A temporary dip within an uptrend. Healthy. It's where your notes look to <b>add</b> (at the 9 EMA, 21 EMA, etc.) rather than panic.</span></div>
+        <div class="jargon"><span class="word">Accumulation vs. Distribution</span><span class="def"><b>Accumulation</b> = institutions quietly buying (rising price on rising volume). <b>Distribution</b> = institutions quietly selling (heavy down-volume). Spotting distribution is the big sell warning in your notes.</span></div>
+
+        <h3>Volatility terms — ADR &amp; ATR</h3>
+        <p>These two measure <em>how much a stock typically moves</em>. They don't predict direction — they set expectations and size your risk.</p>
+        <div class="jargon"><span class="word">ADR (Average Daily Range)</span><span class="def">How much a stock moves in a typical day, as a <b>percentage</b> (usually over the last 14 days). Your notes target <b>3%–10% ADR</b>: below 3% is too sluggish for swing trades (mega-caps), above 10% is wild and hard to manage (small caps). 3–10% is the tradable sweet spot.</span></div>
+        <div class="jargon"><span class="word">ATR (Average True Range)</span><span class="def">The same idea but in <b>dollars</b> — the average daily move in price (e.g. "$1.80 a day"). Used to judge when a stock is over-stretched: if price is ~3× ATR above its 50-day average, it's statistically extended and your notes start trimming.</span></div>
+
+        <h3>VWAP — the "fair price" line</h3>
+        <div class="jargon"><span class="word">VWAP</span><span class="def"><b>Volume-Weighted Average Price</b> — the average price paid, weighted by how much volume traded at each price. It shows the "fair value" most participants actually paid. Big institutions use it to judge if they're buying above or below the crowd's average cost.</span></div>
+        <div class="jargon"><span class="word">Anchored VWAP</span><span class="def">A VWAP that starts ("anchors") from a date you pick — e.g. the stock's IPO day or an earnings day. Your notes anchor from the <b>IPO</b> to see the average price every holder since day one has paid. Staying above it = holders are collectively in profit = bullish.</span></div>
+        <div class="jargon"><span class="word">IPO</span><span class="def"><b>Initial Public Offering</b> — the day a company first sells shares to the public and starts trading on an exchange.</span></div>
+      </section>
+
+      <!-- 06 MENTORS -->
+      <section id="mentors">
+        <span class="sec-num">06 — The Strategy</span>
+        <h2>The two mentors: O'Neil &amp; Weinstein</h2>
+        <p>Your notes lean on two famous trader-authors. Their frameworks answer the two hardest questions: <strong>"how late is this move?"</strong> (O'Neil) and <strong>"is the big trend still on?"</strong> (Weinstein). They're complementary, not competing.</p>
+
+        <h3>William O'Neil — bases &amp; climax tops</h3>
+        <p>O'Neil observed that big winning stocks rise in <strong>steps</strong>: they break out, run, then pause to form a new base, then break out again. He numbered these.</p>
+        <div class="step"><div class="num">1</div><div class="body"><h4>Base 1 &amp; Base 2 — the healthy stages</h4><p>Early in the advance. Fewer people have noticed, moves are cleaner, risk/reward is best. Your notes consider these the safest places to buy.</p></div></div>
+        <div class="step"><div class="num">3</div><div class="body"><h4>Base 3 &amp; Base 4 — the late, crowded stages</h4><p>By now the move is obvious, everyone's talking about it, and it's vulnerable to a sudden top. Your notes say "I believe we are at Base 3" for semiconductors — i.e. late but maybe not done.</p></div></div>
+        <div class="jargon"><span class="word">Climax top</span><span class="def">The end of a big run, when a stock goes <b>vertical</b> (a near-straight-up spike) on huge volume as the last buyers pile in — then collapses. O'Neil's late-stage warning sign. Your notes watch for this to avoid "round-tripping" (giving back) a big winner.</span></div>
+        <p>O'Neil's famous line, quoted in your notes: <em>"What looks cheap often goes lower. What looks expensive often goes higher."</em> Translation: strong, "expensive" leaders keep winning; cheap, beaten-down stocks often keep falling. Don't bargain-hunt; follow strength.</p>
+
+        <h3>Stan Weinstein — the four stages</h3>
+        <p>Weinstein simplified every stock's life into <strong>four stages</strong>, judged against the <strong>30-week moving average</strong> (≈ the 200-day line on a weekly chart).</p>
+        <div class="figure">
+          <svg viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg" font-family="Space Mono, monospace">
+            <polyline points="20,180 120,178 160,150 250,90 320,110 400,55 470,60 520,90 560,140 620,150"
+              fill="none" stroke="#e9ecf1" stroke-width="2.5"/>
+            <polyline points="20,182 120,180 250,150 400,110 520,108 620,120"
+              fill="none" stroke="#f5b14c" stroke-width="1.6"/>
+            <text x="70" y="205" fill="#5aa9ff" font-size="11" text-anchor="middle">Stage 1</text>
+            <text x="70" y="218" fill="#7b8492" font-size="9" text-anchor="middle">basing</text>
+            <text x="250" y="205" fill="#42d392" font-size="11" text-anchor="middle">Stage 2</text>
+            <text x="250" y="218" fill="#7b8492" font-size="9" text-anchor="middle">advancing ▲</text>
+            <text x="445" y="205" fill="#f5b14c" font-size="11" text-anchor="middle">Stage 3</text>
+            <text x="445" y="218" fill="#7b8492" font-size="9" text-anchor="middle">topping</text>
+            <text x="585" y="205" fill="#ff6b6b" font-size="11" text-anchor="middle">Stage 4</text>
+            <text x="585" y="218" fill="#7b8492" font-size="9" text-anchor="middle">declining ▼</text>
+            <text x="628" y="118" fill="#f5b14c" font-size="9" text-anchor="end">30-wk MA</text>
+          </svg>
+          <p class="cap">Stage 1: sideways base. Stage 2: the uptrend — price above a rising 30-week MA (where you want to own it). Stage 3: rounding over / topping. Stage 4: downtrend — avoid.</p>
+        </div>
+        <p>The rule your notes draw from Weinstein: <strong>as long as price is above a rising 30-week MA, the Stage 2 uptrend is intact</strong> — so don't get scared out of a great stock just because it's "extended." But once the 30-week flattens and price starts living below it, Stage 2 is over and the bigger trend is in question.</p>
+
+        <div class="callout">
+          <span class="tag">How they fit together</span>
+          <p><strong>O'Neil</strong> tells you how <em>late</em> the move is (which base) so you don't buy a climax top. <strong>Weinstein</strong> keeps you <em>in</em> the trend (Stage 2) so you don't sell a winner too early. Used together: stay with strength, but stay alert for the late-stage blow-off.</p>
+        </div>
+      </section>
+
+      <!-- 07 PEG -->
+      <section id="peg">
+        <span class="sec-num">07 — The Strategy</span>
+        <h2>The Power Earnings Gap (PEG)</h2>
+        <p>This is the headline setup in your notes — also called an <strong>Episodic Pivot (EP)</strong>. It's the moment a company reports great earnings and the stock <em>gaps</em> up, signaling a possible "character change" where institutions pile in.</p>
+
+        <div class="jargon"><span class="word">Earnings</span><span class="def">Every quarter (≈ every 3 months) public companies report their financial results. It's the biggest scheduled event for a stock — prices often move violently right after. "Earnings season" is the few weeks when most companies report.</span></div>
+        <div class="jargon"><span class="word">Gap (gap up / gap down)</span><span class="def">When a stock <b>opens</b> at a very different price than it closed the day before — leaving a visible "gap" on the chart. Big earnings surprises cause gaps. A <b>gap up</b> = good news; <b>gap down</b> = bad news.</span></div>
+
+        <h3>The four conditions for a valid PEG</h3>
+        <div class="grid2">
+          <div class="mini"><h4>1. Strong earnings</h4><p>The company beats expectations — a real fundamental catalyst, not hype.</p></div>
+          <div class="mini"><h4>2. The gap holds</h4><p>Price gaps up and <em>stays</em> up — it doesn't immediately "fill" (fall back to close the gap).</p></div>
+          <div class="mini"><h4>3. Volume explodes</h4><p>Far above average volume — proof that big money, not just retail, is buying.</p></div>
+          <div class="mini"><h4>4. Accumulation is visible</h4><p>The price/volume behavior shows institutions stepping in, not distributing.</p></div>
+        </div>
+
+        <h3>How your notes trade it</h3>
+        <ul>
+          <li>The <strong>low of the PEG candle</strong> (the lowest price on the gap day) defines your <strong>risk line</strong> — if price falls below it, the setup has failed and you exit.</li>
+          <li>As long as the gap holds above that low, the trend is considered intact and you stay in.</li>
+          <li>Targets are large (+45%, +53% in the examples) because a real character change can run for months.</li>
+        </ul>
+        <div class="jargon"><span class="word">Risk line / Stop</span><span class="def">A predefined price where you admit you're wrong and sell, to cap your loss. Defining it <b>before</b> buying is the core of risk management — it turns a scary "how much could I lose?" into a known, small number.</span></div>
+
+        <h3>The counter-intuitive part</h3>
+        <p>Beginners see a stock gap up 15% and think "I missed it, it's too expensive now." Your notes argue the opposite — echoing O'Neil: a gap up <strong>on great earnings and huge volume</strong> is institutions <em>starting</em> to build positions, which can take weeks. The gap that scares retail is often the entry the pros want.</p>
+
+        <h3>The flip side: the 3-day rule for gap-<em>downs</em></h3>
+        <p>The mirror-image mistake is "buying the dip" right after a stock gaps <strong>down</strong> on bad earnings — grabbing a "discount." Your notes warn against it with the <strong>3-day rule</strong>:</p>
+        <div class="callout warn">
+          <span class="tag">The 3-day rule</span>
+          <p>After a major earnings move (especially a gap down), <strong>wait at least three trading days</strong> before acting. Big funds need days to digest the news and finish selling. Early dip-buyers are often "catching a falling knife" while institutions are still heading for the exit. Let price and volume settle and tell the story first.</p>
+        </div>
+        <div class="jargon"><span class="word">Catching a falling knife</span><span class="def">Buying a stock that's dropping fast, hoping it's near the bottom — and getting hurt as it keeps falling. The vivid warning against premature dip-buying.</span></div>
+      </section>
+
+      <!-- 08 BUILD -->
+      <section id="build">
+        <span class="sec-num">08 — The Strategy</span>
+        <h2>Building a position the way your notes describe</h2>
+        <p>This section turns the ideas into a concrete buying process. Two gates must pass <em>before</em> a single share is bought.</p>
+
+        <div class="grid2">
+          <div class="mini"><h4>Gate 1 — The chart</h4><p>A long <strong>consolidation base</strong> of 6–18+ months. The coiled spring.</p></div>
+          <div class="mini"><h4>Gate 2 — The business</h4><p>Revenue <strong>and</strong> EPS growing <strong>+20% YoY</strong>, expected to continue for ~3 years.</p></div>
+        </div>
+
+        <h3>Deploying capital in tranches</h3>
+        <div class="jargon"><span class="word">Tranche</span><span class="def">A portion of your intended position bought separately, rather than all at once. Buying in tranches ("scaling in") lowers the risk of buying everything at a bad moment.</span></div>
+
+        <p>Here's the worked example straight from your notes, decoded:</p>
+        <div class="card">
+          <div class="ex-head"><span class="ticker">EXAMPLE</span><span class="label">$100,000 portfolio · target 10% position in one stock</span></div>
+          <p style="margin-bottom:10px">A 10% position = <strong>$10,000</strong> of the $100k. Instead of buying all $10k at once, split it:</p>
+          <table style="margin:0">
+            <tr><th>Tranche</th><th>Size</th><th>Where</th><th>Why there</th></tr>
+            <tr><td>First buy</td><td>5% ($5,000)</td><td>at the 9 EMA</td><td>Guarantees you're in strong names that may never pull back deeper.</td></tr>
+            <tr><td>Second buy</td><td>5% ($5,000)</td><td>at the 21 EMA or 50 SMA</td><td>A better price on a deeper dip — <em>if</em> the market gives one.</td></tr>
+          </table>
+          <p style="margin:12px 0 0;font-size:.94rem;color:var(--ink-dim)">If the deeper pullback never comes and you only got the first 5%, that's fine — you still participated. "The market always gives new opportunities."</p>
+        </div>
+
+        <h3>When do you add at each line?</h3>
+        <div class="step"><div class="num">9</div><div class="body"><h4>Add at the 9 EMA — for true leaders</h4><p>The strongest names (especially right after a PEG with 3×+ volume) rarely dip far. They pull back just to the fast 9 EMA and bounce. Adding here "guarantees participation."</p></div></div>
+        <div class="step"><div class="num">21<br>50</div><div class="body"><h4>Add at the 21 EMA / 50 SMA — during market dips</h4><p>When the <em>whole market</em> (tracked via the QQQ/SPY indexes) pulls back ~3–5%, even leaders dip deeper, down to these lines — a chance to add at better prices.</p></div></div>
+        <div class="jargon"><span class="word">QQQ / SPY</span><span class="def">Two ETFs (baskets of stocks) used as proxies for "the market." <b>SPY</b> tracks the S&amp;P 500 (500 big U.S. companies); <b>QQQ</b> tracks the Nasdaq-100 (tech-heavy). Watching them tells you the market's overall mood.</span></div>
+
+        <h3>Averaging up — the unintuitive winner's habit</h3>
+        <div class="jargon"><span class="word">Averaging up</span><span class="def">Buying <b>more</b> of a stock as it rises (and proves you right), raising your average cost. The opposite of "averaging down" (buying more as it falls). Your notes — citing O'Neil — say be comfortable adding to <b>winners</b>, not throwing money at losers.</span></div>
+
+        <div class="callout">
+          <span class="tag">The philosophy here</span>
+          <p>"I care more about trend + accumulation than perfect entries." The point: <strong>don't agonize over the perfect buy price</strong> on a true leader — many never give the perfect retrace. Participate in strength, but never buy a stock that's already wildly extended.</p>
+        </div>
+      </section>
+
+      <!-- 09 SELL -->
+      <section id="sell">
+        <span class="sec-num">09 — The Strategy</span>
+        <h2>Selling &amp; managing — the hardest part</h2>
+        <p>Your notes call selling "one of the hardest questions in trading." The guiding principle: <strong>don't sell just because a stock is up a lot — sell when the <em>character</em> of the move changes.</strong></p>
+
+        <h3>The sell framework (for the trend)</h3>
+        <table>
+          <tr><th>Signal</th><th>Action</th></tr>
+          <tr><td>Stock gets extended from the 10-week (50-day) line</td><td>Stop <strong>adding</strong> (but don't sell yet)</td></tr>
+          <tr><td>It's late-stage (O'Neil Base 3–4)</td><td>Start watching for a climax top</td></tr>
+          <tr><td>Goes <strong>vertical</strong> after a long run</td><td><strong>Trim into strength</strong> (sell a portion while it's still rising)</td></tr>
+          <tr><td>Breaks 10-day or 21-day on heavy volume after a parabolic move</td><td><strong>Reduce</strong> the position</td></tr>
+          <tr><td>Violates the 10-week line on heavy volume</td><td>Respect the sell signal — the trend is breaking</td></tr>
+          <tr><td>30-week MA flattens &amp; price lives below it</td><td>Stage 2 is over — question the whole trend</td></tr>
+        </table>
+        <div class="jargon"><span class="word">Trim into strength</span><span class="def">Selling <b>part</b> of your position while the price is still rising (not waiting for it to fall). You lock in profit calmly instead of panic-selling on the way down. "Sell when others are greedy."</span></div>
+        <div class="jargon"><span class="word">Parabolic / Vertical</span><span class="def">When a stock's rise steepens into a near-straight-up curve. Exciting, but usually unsustainable — a classic late-stage exhaustion sign.</span></div>
+
+        <h3>Two concrete swing-trade sell methods</h3>
+        <p>For shorter-term <em>trading</em> shares (not long-term core holdings), your notes use ATR to time exits.</p>
+
+        <div class="step"><div class="num">A</div><div class="body"><h4>Sell into strength using ATR extension</h4><p>When price stretches to about <strong>3× ATR above the 50-day SMA</strong>, the stock is statistically over-extended — risk/reward has flipped against you even if the trend is intact. That's when you trim. (Some indicators mark this with "green dots" on the chart.)</p></div></div>
+
+        <div class="step"><div class="num">B</div><div class="body"><h4>Trim &amp; trail</h4><p>At an ATR extension, sell a chunk (¼ to ⅓) to lock gains. <strong>Trail</strong> the rest using the 9-day MA — only sell the remainder after a clean <em>close below</em> the 9-day line. You bank some profit, stay in if the trend continues, and never try to nail the exact top.</p></div></div>
+        <div class="jargon"><span class="word">Trailing a stop</span><span class="def">Letting your exit price "follow" the stock up — here, using the rising 9-day MA as a moving floor. As the stock climbs, your sell-trigger climbs with it, so you give back as little as possible if it reverses.</span></div>
+
+        <div class="callout">
+          <span class="tag">Core vs. trading shares — the key distinction</span>
+          <p>Your notes <strong>keep a "core"</strong> position while Stage 2 holds, and only trim "trading shares" when a move gets obvious, vertical, and crowded. The goal is to avoid both mistakes: selling a great winner too early <em>and</em> round-tripping it by ignoring a blow-off top.</p>
+        </div>
+      </section>
+
+      <!-- 10 EXAMPLES -->
+      <section id="examples">
+        <span class="sec-num">10 — Putting It Together</span>
+        <h2>The real examples from your notes, decoded</h2>
+        <p>Now the concepts become concrete. Here are the exact cases your document cites, explained step by step. <em>(These are the trader's own historical illustrations — used here to teach the mechanics, not as predictions or recommendations.)</em></p>
+
+        <div class="card">
+          <div class="ex-head"><span class="ticker">TER</span><span class="label">Three Power Earnings Gaps — Teradyne</span></div>
+          <p>Your notes track <span class="tk">TER</span> printing the same PEG setup three separate times — a textbook illustration of how a Stage 2 leader advances in steps (O'Neil's bases).</p>
+          <ol>
+            <li><strong>~July 30, 2025 — PEG #1.</strong> A clean gap up on strong earnings. Buying near the PEG low offered strong risk/reward; it ran <strong>~45%</strong> into the next earnings report.</li>
+            <li><strong>~Oct 28, 2025 — PEG #2.</strong> Another clean gap. After a brief "shakeout" (a quick scary dip that flushes out weak holders), it reclaimed the level and ran <strong>~53%</strong> more — a textbook continuation.</li>
+            <li><strong>A third PEG.</strong> Now the play is <strong>patience</strong>: wait for a controlled retest of the PEG low <em>or</em> a pullback into the 9/21-day EMA zone to add — rather than chasing.</li>
+          </ol>
+          <p style="margin-bottom:0;font-size:.94rem;color:var(--ink-dim)">The lesson: a real Stage 2 trend "doesn't end until you see clear distribution — heavy sell volume well above average." Until then, each PEG can launch another leg.</p>
+        </div>
+        <div class="jargon"><span class="word">Shakeout</span><span class="def">A sharp, brief dip that scares ("shakes out") nervous holders into selling right before the stock resumes higher. Common in strong trends — which is why your notes don't panic on every dip.</span></div>
+
+        <div class="card">
+          <div class="ex-head"><span class="ticker">RCAT</span><span class="label">ATR extension — when to sell into strength</span></div>
+          <p>A worked example of the "3× ATR" sell rule from Section 09:</p>
+          <ul>
+            <li>RCAT's <strong>ATR was ~$1.80</strong> (its typical daily dollar move).</li>
+            <li>Price pushed to ~<strong>$17.40</strong>, which was about <strong>$5 above its 50-day SMA</strong>.</li>
+            <li>$5 ÷ $1.80 ≈ <strong>3× ATR</strong> — the statistical "over-stretched" threshold.</li>
+            <li>In a high-ADR name, a 3× ATR push often signals short-term exhaustion. The trend wasn't broken, but risk/reward had shifted — so <strong>selling into strength made sense.</strong></li>
+          </ul>
+          <p style="margin-bottom:0;font-size:.94rem;color:var(--ink-dim)">Notice it's not "sell because it went up" — it's "sell because it went up <em>too far, too fast</em> relative to its own normal volatility."</p>
+        </div>
+
+        <div class="card">
+          <div class="ex-head"><span class="ticker">SILVER</span><span class="label">Trim &amp; trail in action</span></div>
+          <p>The "trim and trail" method (Section 09, method B) with round numbers:</p>
+          <ul>
+            <li>You hold a <strong>$1,000 position</strong>, price at <strong>$46</strong>.</li>
+            <li>An ATR extension appears (the "green dot"). You <strong>sell ⅓–¼</strong> into that strength — locking in gains.</li>
+            <li>You <strong>trail the rest with the 9-day MA</strong>, holding until a clean close below it.</li>
+            <li>Result: profit banked, upside kept if it keeps running, no need to time the exact top.</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <div class="ex-head"><span class="ticker">LGN</span><span class="label">Reading ADR</span></div>
+          <p>Used to illustrate the volatility "sweet spot": <span class="tk">LGN</span> has an <strong>ADR of ~5%</strong> — right in the ideal <strong>3–10%</strong> band. Enough daily movement to produce meaningful swing-trade gains, but not so wild that position-sizing and stops become unmanageable.</p>
+        </div>
+      </section>
+
+      <!-- 11 SETUP -->
+      <section id="setup">
+        <span class="sec-num">11 — Putting It Together</span>
+        <h2>The chart setup from your notes</h2>
+        <p>Two practical setups your document spells out, with what each piece is for.</p>
+
+        <h3>Favorite indicators (all on TradingView)</h3>
+        <p>These are community-built indicators you add to your chart. You don't need all of them — here's what each does so you can choose.</p>
+        <table>
+          <tr><th>Indicator</th><th>What it shows</th></tr>
+          <tr><td>3 EMA</td><td>Plots the fast moving averages (9/21-type) you add and trail against.</td></tr>
+          <tr><td>ATR% multiple from 50-MA</td><td>Marks the "3× ATR extended" sell zones — the green-dot signal.</td></tr>
+          <tr><td>Institutional Moving Averages (50/100…)</td><td>The medium/long lines institutions watch.</td></tr>
+          <tr><td>RSI (Relative Strength Index)</td><td>A built-in momentum gauge (0–100) hinting at overbought/oversold.</td></tr>
+          <tr><td>Stan Weinstein 30-week MA</td><td>The Stage-2 trend line from Section 06.</td></tr>
+          <tr><td>Swing Data (ADR% / RVol / PVol / Float)</td><td>A readout of the volatility/volume stats from Section 05.</td></tr>
+          <tr><td>Volume</td><td>The built-in fuel gauge — confirms conviction behind moves.</td></tr>
+        </table>
+        <div class="jargon"><span class="word">RSI</span><span class="def"><b>Relative Strength Index</b>: a 0–100 momentum meter. Above ~70 is often called "overbought," below ~30 "oversold." A rough gauge, not a precise timer. (Different from "relative strength" vs. the market in Section 04.)</span></div>
+        <div class="jargon"><span class="word">Float</span><span class="def">The number of shares actually available to trade publicly. A low float means fewer shares around, which can make a stock move violently — relevant to that high-ADR risk.</span></div>
+
+        <h3>How to draw an Anchored VWAP (TradingView)</h3>
+        <div class="step"><div class="num">1</div><div class="body"><p>Click <strong>Indicators</strong> (bottom-left of the chart).</p></div></div>
+        <div class="step"><div class="num">2</div><div class="body"><p>Search <strong>"Anchored VWAP"</strong> and add it to favorites.</p></div></div>
+        <div class="step"><div class="num">3</div><div class="body"><p>Select it, then <strong>left-click the IPO date</strong> on the chart to anchor the line there.</p></div></div>
+        <p style="margin-top:14px"><strong>Settings your notes use:</strong> band mode <em>Standard</em>; bands multiplier <em>1×</em> enabled; source <em>Close</em>; VWAP line <em>red</em>; price label <em>on</em>; all the extra upper/lower deviation bands <em>off</em>. That gives a single clean line showing the average price every holder has paid since the IPO.</p>
+      </section>
+
+      <!-- 12 REALITY -->
+      <section id="reality">
+        <span class="sec-num">12 — Putting It Together</span>
+        <h2>A reality &amp; risk check</h2>
+        <p>Your notes are honest that "reality is different from books." Here's the same honesty aimed at you as a beginner, because this matters more than any setup.</p>
+
+        <div class="callout risk">
+          <span class="tag">The hard truths</span>
+          <p><strong>1. Most active traders lose money.</strong> Study after study finds the large majority of retail day/swing traders are net losers over time. The skilled minority spent years and real losses getting there.</p>
+          <p><strong>2. This is a high-risk style.</strong> Concentrated positions, +100–200% targets, and tolerating −10–20% drawdowns means real money can vanish fast if you misjudge a "thesis" or skip a stop.</p>
+          <p><strong>3. A document is not a system.</strong> These notes are one person's framework, shared as education. You can't safely copy trades from notes — you'd be missing their full context, sizing, and judgment.</p>
+        </div>
+
+        <div class="callout">
+          <span class="tag">A sane way to start</span>
+          <ul style="margin:6px 0 0">
+            <li><strong>Paper trade first.</strong> Use TradingView's fake-money mode to run this whole process for months with zero financial risk until you can spot a PEG, a base, and an ATR extension on your own.</li>
+            <li><strong>Learn risk before reward.</strong> The most important habit here is the <em>risk line / stop</em> — decide your exit before you enter, every time.</li>
+            <li><strong>Read the source authors.</strong> O'Neil's <em>How to Make Money in Stocks</em> and Weinstein's <em>Secrets for Profiting in Bull and Bear Markets</em> are the primary sources your notes draw on.</li>
+            <li><strong>Only ever risk money you can afford to lose entirely</strong>, and consider speaking with a licensed financial advisor about your overall plan. I'm an AI assistant, not a financial advisor.</li>
+          </ul>
+        </div>
+
+        <p style="margin-top:24px">You now have the vocabulary to re-read your original notes and actually understand every line. That's the real win — comprehension first, capital much, much later.</p>
+      </section>
+
+      <footer>
+        <p class="toptag">Educational explainer · Not financial advice</p>
+        <p style="margin-top:8px">Built from your personal trading-toolkit notes and expanded for a complete beginner. Concepts attributed to William O'Neil, Stan Weinstein, and standard technical-analysis practice. Markets carry real risk of loss.</p>
+      </footer>
+    </div>
+  </main>
+</div>
+
+<script>
+  // progress bar
+  const prog = document.getElementById('progress');
+  const onScroll = () => {
+    const h = document.documentElement;
+    const scrolled = (h.scrollTop) / (h.scrollHeight - h.clientHeight);
+    prog.style.width = (scrolled * 100) + '%';
+  };
+  window.addEventListener('scroll', onScroll, {passive:true});
+  onScroll();
+
+  // active nav via IntersectionObserver
+  const links = [...document.querySelectorAll('#nav a')];
+  const map = {};
+  links.forEach(a => { const id = a.getAttribute('href').slice(1); map[id] = a; });
+  const sections = [...document.querySelectorAll('section, header.hero')];
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = e.target.id;
+        // header maps to #start
+        const key = id === 'start' ? 'start' : id;
+        links.forEach(l => l.classList.remove('active'));
+        if (map[key]) map[key].classList.add('active');
+      }
+    });
+  }, {rootMargin:'-20% 0px -70% 0px', threshold:0});
+  sections.forEach(s => io.observe(s));
+
+  // mobile menu
+  const btn = document.getElementById('menuBtn');
+  const sb = document.getElementById('sidebar');
+  btn.addEventListener('click', () => sb.classList.toggle('open'));
+  document.querySelectorAll('#nav a').forEach(a =>
+    a.addEventListener('click', () => sb.classList.remove('open')));
+</script>
+</body>
+</html>
