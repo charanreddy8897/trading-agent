@@ -6,6 +6,7 @@ on:
     paths:
       - "backend/**"
       - "docker-compose.yml"
+      - ".github/workflows/deploy-backend.yml"
 
 permissions:
   id-token: write

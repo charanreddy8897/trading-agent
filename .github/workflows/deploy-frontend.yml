@@ -5,6 +5,7 @@ on:
     branches: [main]
     paths:
       - "frontend/**"         # only runs when frontend files change
+      - ".github/workflows/deploy-frontend.yml"  # or when workflow itself changes
 
 permissions:
   id-token: write             # needed for OIDC → AWS auth (no long-lived keys)
@@ -23,7 +24,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
           cache-dependency-path: frontend/package-lock.json
 
