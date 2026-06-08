@@ -1,5 +1,5 @@
 """
-DatabaseStack — RDS PostgreSQL (free tier) with optional Aurora upgrade path
+DatabaseStack - RDS PostgreSQL (free tier) with optional Aurora upgrade path
 =============================================================================
 Using RDS PostgreSQL db.t3.micro (FREE TIER):
   - 750 hours/month free for 12 months
@@ -35,7 +35,7 @@ class DatabaseStack(cdk.Stack):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # ── DB Credentials (Secrets Manager) ─────────────────────────────────
+        # -- DB Credentials (Secrets Manager) ---------------------------------
         self.db_secret = sm.Secret(
             self, "DBSecret",
             secret_name="trading-agent/db-credentials",
@@ -48,7 +48,7 @@ class DatabaseStack(cdk.Stack):
             ),
         )
 
-        # ── Subnet Group (uses the isolated private subnets) ──────────────────
+        # -- Subnet Group (uses the isolated private subnets) ------------------
         subnet_group = rds.SubnetGroup(
             self, "DBSubnetGroup",
             vpc=network.vpc,
@@ -59,7 +59,7 @@ class DatabaseStack(cdk.Stack):
             ),
         )
 
-        # ── RDS PostgreSQL — FREE TIER ────────────────────────────────────────
+        # -- RDS PostgreSQL - FREE TIER ----------------------------------------
         self.db_instance = rds.DatabaseInstance(
             self, "PostgreSQL",
             engine=rds.DatabaseInstanceEngine.postgres(
@@ -80,16 +80,16 @@ class DatabaseStack(cdk.Stack):
             storage_encrypted=True,
 
             # Free tier settings
-            multi_az=False,               # Single AZ — multi-AZ doubles the cost
-            publicly_accessible=False,    # Private — only EC2 can reach it
+            multi_az=False,               # Single AZ - multi-AZ doubles the cost
+            publicly_accessible=False,    # Private - only EC2 can reach it
             auto_minor_version_upgrade=True,
             deletion_protection=False,    # Easy cleanup for dev/student
-            backup_retention=cdk.Duration.days(7),
+            backup_retention=cdk.Duration.days(1),  # Free tier max is 1 day
             removal_policy=cdk.RemovalPolicy.SNAPSHOT,  # Snapshot on delete
         )
 
-        # ── AURORA UPGRADE PATH (uncomment when you outgrow RDS) ─────────────
-        # Cost: ~$43+/month — NOT free tier
+        # -- AURORA UPGRADE PATH (uncomment when you outgrow RDS) -------------
+        # Cost: ~$43+/month - NOT free tier
         #
         # self.aurora_cluster = rds.DatabaseCluster(
         #     self, "Aurora",
@@ -110,10 +110,10 @@ class DatabaseStack(cdk.Stack):
         #     removal_policy=cdk.RemovalPolicy.SNAPSHOT,
         # )
 
-        # ── Outputs ───────────────────────────────────────────────────────────
+        # -- Outputs -----------------------------------------------------------
         cdk.CfnOutput(self, "DBEndpoint",
                       value=self.db_instance.db_instance_endpoint_address,
-                      description="RDS endpoint — used in DATABASE_URL")
+                      description="RDS endpoint - used in DATABASE_URL")
         cdk.CfnOutput(self, "DBSecretArn",
                       value=self.db_secret.secret_arn,
                       description="Secrets Manager ARN for DB credentials")

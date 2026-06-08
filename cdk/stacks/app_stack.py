@@ -1,5 +1,5 @@
 """
-AppStack — EC2 t2.micro, IAM role, Elastic IP, SSM parameters
+AppStack - EC2 t2.micro, IAM role, Elastic IP, SSM parameters
 ==============================================================
 Free tier: t2.micro = 750 hrs/month for 12 months ($0).
 
@@ -41,7 +41,7 @@ class AppStack(cdk.Stack):
 
         key_pair_name: str = self.node.try_get_context("key_pair_name") or "trading-agent-key"
 
-        # ── CloudWatch Log Group ──────────────────────────────────────────────
+        # -- CloudWatch Log Group ----------------------------------------------
         log_group = logs.LogGroup(
             self, "AppLogs",
             log_group_name="/trading-agent/backend",
@@ -49,12 +49,12 @@ class AppStack(cdk.Stack):
             removal_policy=cdk.RemovalPolicy.DESTROY,
         )
 
-        # ── IAM Role for EC2 ──────────────────────────────────────────────────
+        # -- IAM Role for EC2 --------------------------------------------------
         role = iam.Role(
             self, "EC2Role",
             assumed_by=iam.ServicePrincipal("ec2.amazonaws.com"),
             managed_policies=[
-                # SSM Session Manager — SSH without opening port 22 (optional)
+                # SSM Session Manager - SSH without opening port 22 (optional)
                 iam.ManagedPolicy.from_aws_managed_policy_name(
                     "AmazonSSMManagedInstanceCore"
                 ),
@@ -86,7 +86,7 @@ class AppStack(cdk.Stack):
             }
         ))
 
-        # ── SSM Parameters (free — Standard tier) ────────────────────────────
+        # -- SSM Parameters (free - Standard tier) ----------------------------
         # Store all API keys here instead of in .env committed to git.
         # After deploy, fill these in via AWS Console → SSM → Parameter Store.
         ssm_params = {
@@ -113,11 +113,11 @@ class AppStack(cdk.Stack):
                 self, f"Param{name.replace('_', '')}",
                 parameter_name=f"/trading-agent/{name}",
                 string_value=placeholder,
-                description=f"Trading Agent — {name}",
+                description=f"Trading Agent - {name}",
                 tier=ssm.ParameterTier.STANDARD,   # Free
             )
 
-        # ── User Data (runs on first boot) ────────────────────────────────────
+        # -- User Data (runs on first boot) ------------------------------------
         db_endpoint = database.db_instance.db_instance_endpoint_address
         region      = self.region
         secret_arn  = database.db_secret.secret_arn
@@ -126,7 +126,7 @@ class AppStack(cdk.Stack):
 
         user_data = ec2.UserData.for_linux()
         user_data.add_commands(
-            # ── System packages ───────────────────────────────────────────────
+            # -- System packages -----------------------------------------------
             "yum update -y",
             "yum install -y docker git jq nginx certbot python3-certbot-nginx",
             "systemctl enable --now docker",
@@ -136,30 +136,30 @@ class AppStack(cdk.Stack):
             'curl -SL "https://github.com/docker/compose/releases/latest/download/docker-compose-linux-x86_64" -o /usr/local/bin/docker-compose',
             "chmod +x /usr/local/bin/docker-compose",
 
-            # ── Pull app code ─────────────────────────────────────────────────
+            # -- Pull app code -------------------------------------------------
             "git clone https://github.com/charanreddy8897/trading-agent.git /app",
             "cd /app && git checkout main",
 
-            # ── Fetch DB credentials from Secrets Manager ─────────────────────
+            # -- Fetch DB credentials from Secrets Manager ---------------------
             f'SECRET=$(aws secretsmanager get-secret-value --secret-id "{secret_arn}" --region {region} --query SecretString --output text)',
             'DB_USER=$(echo $SECRET | jq -r .username)',
             'DB_PASS=$(echo $SECRET | jq -r .password)',
 
-            # ── Write .env from SSM + Secrets Manager ─────────────────────────
+            # -- Write .env from SSM + Secrets Manager -------------------------
             f'cat > /app/backend/.env << ENVEOF',
             f'DATABASE_URL=postgresql://${{DB_USER}}:${{DB_PASS}}@{db_endpoint}:5432/trading_agent',
             'ENVEOF',
             f"aws ssm get-parameters-by-path --path '/trading-agent/' --region {region} --output json | "
             r"jq -r '.Parameters[] | (.Name | split(\"/\")[-1]) + \"=\" + .Value' >> /app/backend/.env",
 
-            # ── Build and start FastAPI backend (Docker) ──────────────────────
+            # -- Build and start FastAPI backend (Docker) ----------------------
             "cd /app/backend && docker build -t trading-agent .",
             "docker run -d --restart always --env-file /app/backend/.env -p 127.0.0.1:8000:8000 --name trading-agent trading-agent",
 
             # Wait for backend to be ready
             "for i in {1..30}; do curl -f http://localhost:8000/health && break || sleep 2; done",
 
-            # ── nginx reverse proxy ───────────────────────────────────────────
+            # -- nginx reverse proxy -------------------------------------------
             # Routes HTTPS → FastAPI on :8000
             "mkdir -p /etc/nginx/conf.d",
             f"""cat > /etc/nginx/conf.d/trading-agent.conf << 'NGINXEOF'
@@ -179,7 +179,7 @@ server {{
 NGINXEOF""",
             "nginx -t && systemctl enable --now nginx",
 
-            # ── Let's Encrypt SSL (only when domain_name is set) ─────────────
+            # -- Let's Encrypt SSL (only when domain_name is set) -------------
             # Certbot reads the nginx config and handles the ACME challenge.
             # After cert issuance nginx is reloaded with HTTPS config.
             *(
@@ -191,18 +191,18 @@ NGINXEOF""",
                     # Auto-renew via cron (certbot installs this automatically)
                 ]
                 if domain_name else
-                ["echo 'No domain set — skipping Let'\\''s Encrypt (HTTP only)'"]
+                ["echo 'No domain set - skipping Let'\\''s Encrypt (HTTP only)'"]
             ),
 
-            # ── CloudWatch agent ──────────────────────────────────────────────
+            # -- CloudWatch agent ----------------------------------------------
             "yum install -y amazon-cloudwatch-agent",
         )
 
-        # ── EC2 Instance (t2.micro — free tier) ───────────────────────────────
+        # -- EC2 Instance (t3.micro - free tier) -------------------------------
         self.instance = ec2.Instance(
             self, "BackendEC2",
             instance_type=ec2.InstanceType.of(
-                ec2.InstanceClass.T2, ec2.InstanceSize.MICRO,  # Free tier
+                ec2.InstanceClass.T3, ec2.InstanceSize.MICRO,  # Free tier
             ),
             machine_image=ec2.MachineImage.latest_amazon_linux2023(),
             vpc=network.vpc,
@@ -224,13 +224,13 @@ NGINXEOF""",
             ],
         )
 
-        # ── Elastic IP (free when attached to running instance) ───────────────
+        # -- Elastic IP (free when attached to running instance) ---------------
         eip = ec2.CfnEIP(self, "ElasticIP", instance_id=self.instance.instance_id)
 
-        # ── Outputs ───────────────────────────────────────────────────────────
+        # -- Outputs -----------------------------------------------------------
         cdk.CfnOutput(self, "PublicIP",
                       value=eip.ref,
-                      description="Elastic IP — put this in your DNS")
+                      description="Elastic IP - put this in your DNS")
         cdk.CfnOutput(self, "APIUrl",
                       value=f"http://{eip.ref}:8000",
                       description="FastAPI base URL")

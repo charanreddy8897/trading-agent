@@ -28,14 +28,17 @@ secrets/
 # ═══════════════════════════════════════════════════════════════════════════
 # Documentation (keep local until ready)
 # ═══════════════════════════════════════════════════════════════════════════
-README.md
-*/README.md
-**/*README.md
 TESTING_COMPLETE.md
 AUDIT_REPORT.md
 *.md
+!README.md
+!DEPLOYMENT.md
 !trading-agent-blueprint*.md
 !trading-agent-prerequisites.md
+!documentation/**/*.md
+!cdk/**/*.md
+!backend/**/*.md
+!frontend/**/*.md
 
 # Local-only files
 migrate_to_workspace.sh

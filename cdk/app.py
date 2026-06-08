@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-Trading Agent — AWS CDK Application
+Trading Agent - AWS CDK Application
 ====================================
 Four stacks, deployed in order:
-  1. TradingAgentNetwork   — VPC, subnets, security groups
-  2. TradingAgentDatabase  — RDS PostgreSQL 16 (free tier)
-  3. TradingAgentApp       — EC2 t2.micro, nginx, Let's Encrypt
-  4. TradingAgentFrontend  — S3 + CloudFront (permanently free tier)
+  1. TradingAgentNetwork   - VPC, subnets, security groups
+  2. TradingAgentDatabase  - RDS PostgreSQL 16 (free tier)
+  3. TradingAgentApp       - EC2 t2.micro, nginx, Let's Encrypt
+  4. TradingAgentFrontend  - S3 + CloudFront (permanently free tier)
 
 Free-tier cost estimate (first 12 months):
   EC2 t2.micro          → $0   (750 hrs/month free)
@@ -19,7 +19,7 @@ Free-tier cost estimate (first 12 months):
   CloudWatch basic      → $0
   Route53 hosted zone   → $0.50/month  ← only cost if you add a domain
   Domain registration   → ~$1/month amortised (buy from any registrar)
-  ─────────────────────────────────────────────────
+  -------------------------------------------------
   Total year 1          → ~$0–$1.50/month
 
 After 12 months:
@@ -29,7 +29,7 @@ After 12 months:
   CloudFront            → $0  (always free tier)
   Route53               → $0.50/month
   Domain                → ~$1/month
-  ─────────────────────────────────────────────────
+  -------------------------------------------------
   Total after year 1    → ~$24/month
 
 Deploy:

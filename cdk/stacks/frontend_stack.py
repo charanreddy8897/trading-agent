@@ -1,5 +1,5 @@
 """
-FrontendStack — S3 + CloudFront + ACM SSL + optional Route53
+FrontendStack - S3 + CloudFront + ACM SSL + optional Route53
 =============================================================
 Cost (permanent always-free tier, not just 12 months):
   CloudFront : 1 TB data transfer + 10M requests/month → $0
@@ -40,7 +40,7 @@ class FrontendStack(cdk.Stack):
     ) -> None:
         super().__init__(scope, construct_id, **kwargs)
 
-        # ── S3 Bucket (private — CloudFront is the only entry point) ─────────
+        # -- S3 Bucket (private - CloudFront is the only entry point) ---------
         self.bucket = s3.Bucket(
             self, "FrontendBucket",
             bucket_name=f"trading-agent-frontend-{self.account}",
@@ -51,7 +51,7 @@ class FrontendStack(cdk.Stack):
             encryption=s3.BucketEncryption.S3_MANAGED,
         )
 
-        # ── Origin Access Control (OAC) — modern S3+CloudFront auth ──────────
+        # -- Origin Access Control (OAC) - modern S3+CloudFront auth ----------
         oac = cf.CfnOriginAccessControl(
             self, "OAC",
             origin_access_control_config=cf.CfnOriginAccessControl.OriginAccessControlConfigProperty(
@@ -62,7 +62,7 @@ class FrontendStack(cdk.Stack):
             ),
         )
 
-        # ── ACM Certificate (free — only valid when used with CloudFront) ─────
+        # -- ACM Certificate (free - only valid when used with CloudFront) -----
         # Only created when you provide a domain_name.
         # Certificate must be in us-east-1 for CloudFront (CDK handles this).
         certificate = None
@@ -80,7 +80,7 @@ class FrontendStack(cdk.Stack):
                 cleanup_route53_records=True,
             )
 
-        # ── CloudFront Distribution ───────────────────────────────────────────
+        # -- CloudFront Distribution -------------------------------------------
         dist_kwargs: dict = dict(
             default_behavior=cf.BehaviorOptions(
                 origin=origins.S3BucketOrigin.with_origin_access_control(
@@ -91,7 +91,7 @@ class FrontendStack(cdk.Stack):
                 allowed_methods=cf.AllowedMethods.ALLOW_GET_HEAD,
                 compress=True,
             ),
-            # SPA routing — return index.html for all 403/404 (React Router)
+            # SPA routing - return index.html for all 403/404 (React Router)
             error_responses=[
                 cf.ErrorResponse(
                     http_status=403,
@@ -107,7 +107,7 @@ class FrontendStack(cdk.Stack):
                 ),
             ],
             default_root_object="index.html",
-            price_class=cf.PriceClass.PRICE_CLASS_100,  # US + EU only — cheapest
+            price_class=cf.PriceClass.PRICE_CLASS_100,  # US + EU only - cheapest
             http_version=cf.HttpVersion.HTTP2_AND_3,
             minimum_protocol_version=cf.SecurityPolicyProtocol.TLS_V1_2_2021,
             comment="Trading Agent Frontend",
@@ -119,7 +119,7 @@ class FrontendStack(cdk.Stack):
 
         self.distribution = cf.Distribution(self, "CDN", **dist_kwargs)
 
-        # Fix: attach OAC to the S3 origin (L1 workaround — CDK L2 limitation)
+        # Fix: attach OAC to the S3 origin (L1 workaround - CDK L2 limitation)
         cfn_dist = self.distribution.node.default_child
         cfn_dist.add_property_override(
             "DistributionConfig.Origins.0.OriginAccessControlId", oac.ref
@@ -142,7 +142,7 @@ class FrontendStack(cdk.Stack):
             )
         )
 
-        # ── Route53 DNS record (only if domain + hosted zone provided) ─────────
+        # -- Route53 DNS record (only if domain + hosted zone provided) ---------
         if domain_name and certificate:
             r53.ARecord(
                 self, "AliasRecord",
@@ -153,10 +153,10 @@ class FrontendStack(cdk.Stack):
                 ),
             )
 
-        # ── Outputs ───────────────────────────────────────────────────────────
+        # -- Outputs -----------------------------------------------------------
         cdk.CfnOutput(self, "BucketName",
                       value=self.bucket.bucket_name,
-                      description="S3 bucket — upload your React build here")
+                      description="S3 bucket - upload your React build here")
         cdk.CfnOutput(self, "CloudFrontURL",
                       value=f"https://{self.distribution.distribution_domain_name}",
                       description="Your frontend URL")
