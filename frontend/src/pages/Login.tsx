@@ -19,7 +19,11 @@ export default function Login() {
     setLoading(true)
 
     try {
-      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://100.30.119.38'
+      // Use relative path to avoid mixed content error
+      // In production, user must access via HTTP or setup HTTPS on backend
+      const API_BASE = window.location.protocol === 'https:'
+        ? 'http://100.30.119.38'  // Will cause mixed content error - need HTTPS backend
+        : import.meta.env.VITE_API_BASE_URL || 'http://100.30.119.38'
 
       if (isLogin) {
         // Login flow
