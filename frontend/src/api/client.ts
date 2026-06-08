@@ -11,9 +11,24 @@ const api = axios.create({
   headers: { 'Content-Type': 'application/json' },
 })
 
+// Add auth token to all requests
+api.interceptors.request.use((config) => {
+  const token = localStorage.getItem('access_token')
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`
+  }
+  return config
+})
+
 api.interceptors.response.use(
   (res) => res.data,
   (err) => {
+    // If 401 Unauthorized, redirect to login
+    if (err.response?.status === 401) {
+      localStorage.removeItem('access_token')
+      localStorage.removeItem('refresh_token')
+      window.location.href = '/login'
+    }
     const msg = err.response?.data?.detail ?? err.message ?? 'API error'
     return Promise.reject(new Error(String(msg)))
   },
