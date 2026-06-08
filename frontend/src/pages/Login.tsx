@@ -19,9 +19,11 @@ export default function Login() {
     setLoading(true)
 
     try {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://100.30.119.38'
+
       if (isLogin) {
         // Login flow
-        const response = await axios.post('http://100.30.119.38/api/v1/auth/login', {
+        const response = await axios.post(`${API_BASE}/api/v1/auth/login`, {
           username: formData.username,
           password: formData.password,
         })
@@ -38,7 +40,7 @@ export default function Login() {
         }
       } else {
         // Register flow
-        await axios.post('http://100.30.119.38/api/v1/auth/register', {
+        await axios.post(`${API_BASE}/api/v1/auth/register`, {
           username: formData.username,
           password: formData.password,
           email: formData.email,
@@ -49,6 +51,7 @@ export default function Login() {
         setError('Account created! Please login.')
       }
     } catch (err: any) {
+      console.error('Login error:', err)
       setError(err.response?.data?.detail || err.message || 'An error occurred')
     } finally {
       setLoading(false)

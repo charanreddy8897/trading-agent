@@ -16,8 +16,10 @@ export default function TOTPSetup() {
       return
     }
 
+    const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://100.30.119.38'
+
     // Fetch TOTP QR code
-    axios.get('http://100.30.119.38/api/v1/auth/totp-setup', {
+    axios.get(`${API_BASE}/api/v1/auth/totp-setup`, {
       headers: { Authorization: `Bearer ${tempToken}` }
     })
       .then(res => setQrCode(res.data.qr_code))
@@ -30,8 +32,10 @@ export default function TOTPSetup() {
     setLoading(true)
 
     try {
+      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://100.30.119.38'
+
       const response = await axios.post(
-        'http://100.30.119.38/api/v1/auth/totp',
+        `${API_BASE}/api/v1/auth/totp`,
         { code },
         { headers: { Authorization: `Bearer ${tempToken}` } }
       )
