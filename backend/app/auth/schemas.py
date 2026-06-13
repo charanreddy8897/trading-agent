@@ -28,8 +28,11 @@ class RefreshRequest(BaseModel):
 # ── Responses ─────────────────────────────────────────────────────────────────
 
 class LoginResponse(BaseModel):
-    status:     str           # "totp_required" | "setup_required"
-    temp_token: str
+    status:         str                  # "success" | "totp_required"
+    temp_token:     str | None = None    # Only present when status="totp_required"
+    access_token:   str | None = None    # Only present when status="success"
+    refresh_token:  str | None = None    # Only present when status="success"
+    token_type:     str = "bearer"
 
 
 class TokenResponse(BaseModel):

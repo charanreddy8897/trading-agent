@@ -74,6 +74,13 @@ class AuthService:
             return None
         return user
 
+    def update_last_login(self, db: Session, user_id: int) -> None:
+        """Update the user's last_login timestamp."""
+        user = db.query(User).filter(User.id == user_id).first()
+        if user:
+            user.last_login = datetime.now(timezone.utc)
+            db.commit()
+
     # ── TOTP ──────────────────────────────────────────────────────────────────
 
     def generate_totp_secret(self, db: Session, user: User) -> str:

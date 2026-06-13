@@ -41,7 +41,8 @@ def _get_limiter():
 async def login(request: Request, body: LoginRequest, db: Session = Depends(get_db)):
     """
     Rate-limited: 5 attempts per minute per IP (applied by slowapi middleware in main.py).
-    Returns a short-lived temp_token (5 min) on success.
+    If TOTP is disabled: returns access_token + refresh_token directly.
+    If TOTP is enabled: returns temp_token (5 min) for TOTP verification.
     """
     user = auth_service.authenticate_password(db, body.username, body.password)
     if not user:
@@ -50,10 +51,23 @@ async def login(request: Request, body: LoginRequest, db: Session = Depends(get_
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect credentials",
         )
-    temp_token   = auth_service.create_token(user.id, TokenType.TEMP)
-    login_status = "totp_required" if user.totp_enabled else "setup_required"
-    logger.info("Login attempt succeeded", extra={"username": user.username, "status": login_status})
-    return LoginResponse(status=login_status, temp_token=temp_token)
+
+    # If TOTP is disabled, issue tokens directly (no TOTP step needed)
+    if not user.totp_enabled:
+        access_token = auth_service.create_token(user.id, TokenType.ACCESS)
+        refresh_token = auth_service.create_token(user.id, TokenType.REFRESH)
+        auth_service.update_last_login(db, user.id)
+        logger.info("Login succeeded (no TOTP)", extra={"username": user.username})
+        return LoginResponse(
+            status="success",
+            access_token=access_token,
+            refresh_token=refresh_token,
+        )
+
+    # TOTP is enabled, return temp token for TOTP verification
+    temp_token = auth_service.create_token(user.id, TokenType.TEMP)
+    logger.info("Login succeeded (TOTP required)", extra={"username": user.username})
+    return LoginResponse(status="totp_required", temp_token=temp_token)
 
 
 # Apply rate limit as decorator (slowapi style)
