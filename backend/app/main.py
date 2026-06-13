@@ -62,6 +62,8 @@ app.add_middleware(
         "http://localhost:3000",
         "https://d28apcmg03a0s.cloudfront.net",  # CloudFront frontend
         "http://100.30.119.38",  # EC2 direct access
+        "https://nexustrader.xyz",  # Custom domain via Cloudflare
+        "https://api.nexustrader.xyz",  # API subdomain via Cloudflare
     ],
     allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],  # explicit, not wildcard
     allow_headers=["Authorization", "Content-Type", "X-Request-ID", "X-Sync-Key"],

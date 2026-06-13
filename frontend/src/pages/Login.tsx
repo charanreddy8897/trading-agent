@@ -19,10 +19,9 @@ export default function Login() {
     setLoading(true)
 
     try {
-      // Use relative path to avoid mixed content error
-      // In production, user must access via HTTP or setup HTTPS on backend
-      const API_BASE = window.location.protocol === 'https:'
-        ? 'http://100.30.119.38'  // Will cause mixed content error - need HTTPS backend
+      // Use custom domain API endpoint when accessed via custom domain
+      const API_BASE = window.location.hostname === 'nexustrader.xyz'
+        ? 'https://api.nexustrader.xyz'
         : import.meta.env.VITE_API_BASE_URL || 'http://100.30.119.38'
 
       if (isLogin) {

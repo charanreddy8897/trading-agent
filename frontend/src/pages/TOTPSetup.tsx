@@ -16,7 +16,9 @@ export default function TOTPSetup() {
       return
     }
 
-    const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://100.30.119.38'
+    const API_BASE = window.location.hostname === 'nexustrader.xyz'
+      ? 'https://api.nexustrader.xyz'
+      : import.meta.env.VITE_API_BASE_URL || 'http://100.30.119.38'
 
     // Fetch TOTP QR code
     axios.get(`${API_BASE}/api/v1/auth/totp-setup`, {
@@ -32,7 +34,9 @@ export default function TOTPSetup() {
     setLoading(true)
 
     try {
-      const API_BASE = import.meta.env.VITE_API_BASE_URL || 'http://100.30.119.38'
+      const API_BASE = window.location.hostname === 'nexustrader.xyz'
+        ? 'https://api.nexustrader.xyz'
+        : import.meta.env.VITE_API_BASE_URL || 'http://100.30.119.38'
 
       const response = await axios.post(
         `${API_BASE}/api/v1/auth/totp`,
